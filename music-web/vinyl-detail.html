@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinyl Details - MusicOnline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">MusicOnline</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto" id="mainNavbar"></ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <a href="/search.html" class="btn btn-sm btn-outline-secondary mb-3">&larr; Back to Search</a>
+    <div id="detailContainer">
+        <div class="text-center py-5">Loading...</div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="js/common.js"></script>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const vinylId = urlParams.get('id');
+    if (!vinylId) {
+        $('#detailContainer').html('<div class="alert alert-danger">Invalid vinyl ID</div>');
+    } else {
+        api.get(`/vinyls/${vinylId}`).then(res => {
+            if (res.data.code === 200) {
+                const v = res.data.data;
+                const html = `
+                        <div class="row">
+                            <div class="col-md-5">
+                                <img src="${v.coverImagePath || '/images/placeholder.jpg'}" class="img-fluid rounded shadow" alt="Cover">
+                            </div>
+                            <div class="col-md-7">
+                                <h1>${escapeHtml(v.title)}</h1>
+                                <h4 class="text-muted">${escapeHtml(v.artist)}</h4>
+                                <p><strong>Release Date:</strong> ${v.releaseDate || 'Unknown'}</p>
+                                <p><strong>Genre:</strong> ${v.genre || 'Uncategorized'}</p>
+                                <p><strong>Price:</strong> <span class="text-danger fs-3">$${v.price}</span></p>
+                                <p><strong>Description:</strong> ${escapeHtml(v.description) || 'No description'}</p>
+                                <hr>
+                                <div class="seller-card p-3 rounded">
+                                    <h6>Seller Information</h6>
+                                    <p>Username: ${v.seller ? escapeHtml(v.seller.username) : 'Unknown'}</p>
+                                    <button class="btn btn-outline-primary btn-sm" disabled>Contact Seller (Demo)</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                $('#detailContainer').html(html);
+            } else {
+                $('#detailContainer').html('<div class="alert alert-danger">Vinyl not found</div>');
+            }
+        }).catch(() => {
+            $('#detailContainer').html('<div class="alert alert-danger">Load failed</div>');
+        });
+    }
+</script>
+</body>
+</html>

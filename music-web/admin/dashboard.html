@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Console - MusicOnline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <span class="navbar-brand">MusicOnline Admin</span>
+        <div class="d-flex">
+            <a href="/index.html" class="btn btn-outline-light btn-sm">Frontend</a>
+            <button id="logoutBtn" class="btn btn-danger btn-sm ms-2">Logout</button>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5>Total Users</h5>
+                    <h2 id="totalUsers">-</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5>Total Vinyls</h5>
+                    <h2 id="totalVinyls">-</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5>Listed Vinyls</h5>
+                    <h2 id="listedVinyls">-</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">Quick Actions</div>
+        <div class="card-body">
+            <a href="/admin/users.html" class="btn btn-outline-primary">User Management</a>
+            <a href="/admin/vinyls.html" class="btn btn-outline-success ms-2">Vinyl Moderation</a>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="js/common.js"></script>
+<script>
+    (async function() {
+        try {
+            await api.get('/admin/dashboard/stats');
+        } catch (e) {
+            window.location.href = '/login.html';
+        }
+    })();
+
+    async function checkAdminAndLoad() {
+        try {
+            const statsRes = await api.get('/admin/dashboard/stats');
+            if (statsRes.data.code === 200) {
+                const stats = statsRes.data.data;
+                $('#totalUsers').text(stats.totalUsers);
+                $('#totalVinyls').text(stats.totalVinyls);
+                $('#listedVinyls').text(stats.listedVinyls);
+            } else {
+                throw new Error('No permission');
+            }
+        } catch (err) {
+            alert('Admin permission required or session expired');
+            window.location.href = '/login.html';
+        }
+    }
+    $('#logoutBtn').on('click', async () => {
+        await api.post('/auth/logout');
+        window.location.href = '/login.html';
+    });
+    checkAdminAndLoad();
+</script>
+</body>
+</html>

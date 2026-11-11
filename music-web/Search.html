@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Vinyl - MusicOnline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">MusicOnline</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto" id="mainNavbar"></ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="search-filters">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label>Keyword (Artist/Album)</label>
+                <input type="text" id="keyword" class="form-control" placeholder="e.g., Pink Floyd">
+            </div>
+            <div class="col-md-4">
+                <label>Genre</label>
+                <select id="genre" class="form-select">
+                    <option value="all">All</option>
+                    <option value="Rock">Rock</option>
+                    <option value="Jazz">Jazz</option>
+                    <option value="Classical">Classical</option>
+                    <option value="Pop">Pop</option>
+                    <option value="Electronic">Electronic</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button id="searchBtn" class="btn btn-primary w-100">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultContainer">
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="vinylGrid"></div>
+        <nav aria-label="Pagination" class="mt-4">
+            <ul class="pagination justify-content-center" id="pagination"></ul>
+        </nav>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="js/common.js"></script>
+<script>
+    let currentPage = 1;
+    let currentKeyword = '';
+    let currentGenre = 'all';
+
+    async function loadVinyls(page = 1) {
+        const params = {
+            page: page,
+            size: 12,
+            keyword: currentKeyword,
+            genre: currentGenre === 'all' ? '' : currentGenre
+        };
+        try {
+            const res = await api.get('/vinyls', { params });
+            if (res.data.code === 200) {
+                const data = res.data.data;
+                renderGrid(data.records);
+                renderPagination(data.total, page, 12);
+            }
+        } catch (err) {
+            $('#vinylGrid').html('<div class="alert alert-warning">Failed to load</div>');
+        }
+    }
+
+    function renderGrid(vinyls) {
+        const $grid = $('#vinylGrid');
+        $grid.empty();
+        if (!vinyls || vinyls.length === 0) {
+            $grid.html('<div class="col-12 text-center">No vinyl records found</div>');
+            return;
+        }
+        vinyls.forEach(v => {
+            $grid.append(`
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="${v.coverImagePath || '/images/placeholder.jpg'}" class="card-img-top" alt="cover">
+                            <div class="card-body">
+                                <h5 class="card-title">${escapeHtml(v.title)}</h5>
+                                <p class="card-text text-muted">${escapeHtml(v.artist)}</p>
+                                <p class="card-text fw-bold text-primary">$${v.price}</p>
+                                <a href="/vinyl-detail.html?id=${v.id}" class="btn btn-sm btn-outline-secondary">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                `);
+        });
+    }
+
+    function renderPagination(total, current, size) {
+        const totalPages = Math.ceil(total / size);
+        if (totalPages <= 1) return;
+        let html = '';
+        if (current > 1) html += `<li class="page-item"><a class="page-link" href="#" data-page="${current-1}">Previous</a></li>`;
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === current) html += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+            else html += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+        }
+        if (current < totalPages) html += `<li class="page-item"><a class="page-link" href="#" data-page="${current+1}">Next</a></li>`;
+        $('#pagination').html(html);
+        $('.page-link[data-page]').on('click', function(e) {
+            e.preventDefault();
+            const page = parseInt($(this).data('page'));
+            if (!isNaN(page)) {
+                currentPage = page;
+                loadVinyls(currentPage);
+            }
+        });
+    }
+
+    $('#searchBtn').on('click', function() {
+        currentKeyword = $('#keyword').val().trim();
+        currentGenre = $('#genre').val();
+        currentPage = 1;
+        loadVinyls(1);
+    });
+
+    loadVinyls(1);
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-3">
+    <div class="d-flex justify-content-between">
+        <h3>User List</h3>
+        <a href="/admin/dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+    <table class="table table-bordered admin-table mt-3">
+        <thead>
+        <tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+    </table>
+    <nav><ul class="pagination" id="userPagination"></ul></nav>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="js/common.js"></script>
+<script>
+    (async function() {
+        try {
+            await api.get('/admin/users');
+        } catch (e) {
+            window.location.href = '/login.html';
+        }
+    })();
+
+    let currentPage = 1;
+    async function loadUsers(page = 1) {
+        const res = await api.get(`/admin/users?page=${page}&size=10`);
+        if (res.data.code === 200) {
+            const data = res.data.data;
+            const tbody = $('#userTableBody');
+            tbody.empty();
+            data.records.forEach(u => {
+                tbody.append(`
+                        <tr>
+                            <td>${u.id}</td><td>${escapeHtml(u.username)}</td><td>${escapeHtml(u.email)}</td>
+                            <td>${u.role}</td>
+                            <td id="status-${u.id}">${u.status}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning suspend-btn" data-id="${u.id}" data-status="${u.status}">${u.status === 'suspended' ? 'Unsuspend' : 'Suspend'}</button>
+                            </td>
+                        </tr>
+                    `);
+            });
+            let pagHtml = '';
+            for (let i = 1; i <= Math.ceil(data.total/10); i++) {
+                pagHtml += `<li class="page-item ${i===page?'active':''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+            }
+            $('#userPagination').html(pagHtml);
+            $('.page-link[data-page]').on('click', function(e){
+                e.preventDefault();
+                currentPage = parseInt($(this).data('page'));
+                loadUsers(currentPage);
+            });
+        }
+    }
+    $(document).on('click', '.suspend-btn', async function() {
+        const userId = $(this).data('id');
+        const currentStatus = $(this).data('status');
+        const newStatus = currentStatus === 'suspended' ? 'normal' : 'suspended';
+        if (confirm(`Confirm ${newStatus === 'suspended' ? 'suspend' : 'unsuspend'} this user?`)) {
+            await api.patch(`/admin/users/${userId}/status?status=${newStatus}`);
+            loadUsers(currentPage);
+        }
+    });
+    loadUsers();
+</script>
+</body>
+</html>
