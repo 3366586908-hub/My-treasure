@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chairperson | Simply Rugby</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body{background:#f8f9fa;font-family:Arial}
+        .sidebar{min-height:100vh;background:#1e293b;color:white;padding:1.5rem 1rem;}
+        .sidebar h5{text-align:center;margin-bottom:1.5rem;padding-bottom:0.5rem;border-bottom:1px solid #334155;}
+        .sidebar a{color:#f1f5f9;display:block;padding:0.7rem 1rem;border-radius:6px;text-decoration:none;margin-bottom:0.3rem;cursor:pointer;}
+        .sidebar a:hover{background:#334155;}
+        .sidebar a.active{background:#0ea5e9;}
+        .content{padding:2rem;}
+        .section{display:none;}
+        .section.active{display:block;animation:fadeIn 0.3s ease;}
+        .card{margin-bottom:1.5rem;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+        .card-header{background:#f8fafc;font-weight:600;}
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h5>Chair Menu</h5>
+            <a onclick="show('dashboard')" class="menu-item active">Dashboard</a>
+            <a onclick="show('reviewApplication')" class="menu-item">Review Application</a>
+            <a onclick="show('systemOverview')" class="menu-item">System Overview</a>
+            <a onclick="show('memberAudit')" class="menu-item">Member Audit</a>
+            <a onclick="show('publishFixture')" class="menu-item">Publish Fixture</a>
+            <a href="login.html" class="mt-4">Logout</a>
+        </div>
+
+        <div class="col-md-10 content">
+            <!-- Dashboard -->
+            <div id="dashboard" class="section active">
+                <h3>Chairperson Dashboard</h3>
+                <p class="text-muted">Club management overview & approval center</p>
+                <div class="row mt-3">
+                    <div class="col-md-3"><div class="card p-3 text-center"><h5>Total Members</h5><h2 class="text-primary">126</h2></div></div>
+                    <div class="col-md-3"><div class="card p-3 text-center"><h5>Total Players</h5><h2 class="text-success">84</h2></div></div>
+                    <div class="col-md-3"><div class="card p-3 text-center"><h5>Fixtures</h5><h2 class="text-warning">20</h2></div></div>
+                    <div class="col-md-3"><div class="card p-3 text-center"><h5>Pending Reviews</h5><h2 class="text-danger" id="pendingCount">0</h2></div></div>
+                </div>
+            </div>
+
+            <!-- Review Application -->
+            <div id="reviewApplication" class="section">
+                <h3>Review Fixture Applications</h3>
+                <div class="card"><div class="card-header">Pending Applications</div><div class="card-body"><form id="reviewForm" class="needs-validation" novalidate><div class="mb-3"><label>Select Application</label><select id="reviewSelect" class="form-select" required><option value="">Choose application</option></select><div class="invalid-feedback">Required</div></div><div class="mb-3"><label>Review Result</label><select id="reviewResult" class="form-select" required><option value="">Select</option><option value="approve">Approve</option><option value="reject">Reject</option></select><div class="invalid-feedback">Required</div></div><div class="mb-3"><label>Review Comments</label><textarea id="reviewComments" class="form-control" rows="3"></textarea></div><button class="btn btn-primary" type="submit">Submit Review</button></form></div></div>
+            </div>
+
+            <!-- System Overview (unchanged) -->
+            <div id="systemOverview" class="section"><h3>System Overview</h3><div class="card"><div class="card-body"><div class="row"><div class="col-md-6"><h5>Membership Statistics</h5><p>Active Members: 118</p><p>Expired Members: 8</p><p>Player Members: 84</p><p>Non-player Members: 42</p></div><div class="col-md-6"><h5>Fixture Statistics</h5><p>Upcoming Matches: <span id="statUpcoming">0</span></p><p>Completed Matches: <span id="statCompleted">0</span></p><p>Win Rate: 67%</p><p>Total Training Sessions: 28</p></div></div></div></div></div>
+
+            <!-- Member Audit (unchanged) -->
+            <div id="memberAudit" class="section"><h3>Member Audit & Verification</h3><div class="card"><div class="card-header">Pending Member Verification</div><div class="card-body"><table class="table table-striped"><thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td>M127</td><td>Emma Clark</td><td>Non-player</td><td>Pending</td><td><button class="btn btn-sm btn-success">Approve</button></td></tr><tr><td>M128</td><td>James Taylor</td><td>Player</td><td>Pending</td><td><button class="btn btn-sm btn-success">Approve</button></td></tr></tbody></table></div></div></div>
+
+            <!-- Publish Fixture -->
+            <div id="publishFixture" class="section"><h3>Publish Approved Fixtures</h3><div class="card"><div class="card-body"><form id="publishForm" class="needs-validation" novalidate><div class="mb-3"><label>Select Approved Fixture</label><select id="publishSelect" class="form-select" required><option value="">Choose fixture</option></select><div class="invalid-feedback">Required</div></div><div class="mb-3"><label>Notes to Members</label><textarea id="publishNotes" class="form-control" rows="3"></textarea></div><button class="btn btn-primary" type="submit">Publish Fixture</button></form></div></div></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let fixtures = [];
+    let applications = [];
+
+    function loadData() {
+        const storedFixtures = localStorage.getItem('rugby_fixtures');
+        const storedApps = localStorage.getItem('rugby_applications');
+        if (storedFixtures) fixtures = JSON.parse(storedFixtures);
+        else fixtures = [];
+        if (storedApps) applications = JSON.parse(storedApps);
+        else applications = [];
+    }
+
+    function saveApplications() { localStorage.setItem('rugby_applications', JSON.stringify(applications)); }
+    function saveFixtures() { localStorage.setItem('rugby_fixtures', JSON.stringify(fixtures)); }
+
+    // Render pending applications dropdown
+    function renderReviewDropdown() {
+        const select = document.getElementById('reviewSelect');
+        const pending = applications.filter(app => app.reviewStatus === 'pending');
+        document.getElementById('pendingCount').innerText = pending.length;
+        if (!select) return;
+        if (pending.length === 0) {
+            select.innerHTML = '<option value="">No pending applications</option>';
+            select.disabled = true;
+        } else {
+            select.disabled = false;
+            let html = '<option value="">Choose application</option>';
+            pending.forEach(app => {
+                const fixture = fixtures.find(f => f.id === app.fixtureId);
+                const fixtureDesc = fixture ? `${fixture.id} - ${fixture.date} vs ${fixture.opponent}` : app.fixtureId;
+                html += `<option value="${app.id}">${fixtureDesc}</option>`;
+            });
+            select.innerHTML = html;
+        }
+    }
+
+    // After approval, show approved fixtures in publish dropdown
+    function renderPublishDropdown() {
+        const select = document.getElementById('publishSelect');
+        const approvedApps = applications.filter(app => app.reviewStatus === 'approved');
+        if (!select) return;
+        if (approvedApps.length === 0) {
+            select.innerHTML = '<option value="">No approved fixtures ready for publishing</option>';
+            select.disabled = true;
+        } else {
+            select.disabled = false;
+            let html = '<option value="">Choose fixture</option>';
+            approvedApps.forEach(app => {
+                const fixture = fixtures.find(f => f.id === app.fixtureId);
+                if (fixture) {
+                    html += `<option value="${app.fixtureId}">${fixture.id} - ${fixture.date} vs ${fixture.opponent}</option>`;
+                }
+            });
+            select.innerHTML = html;
+        }
+    }
+
+    // Submit review (Approve/Reject)
+    function submitReview(event) {
+        event.preventDefault();
+        const select = document.getElementById('reviewSelect');
+        const result = document.getElementById('reviewResult').value;
+        const appId = select.value;
+        if (!appId || !result) {
+            document.getElementById('reviewForm').classList.add('was-validated');
+            return;
+        }
+        const application = applications.find(app => app.id === appId);
+        if (!application) return;
+        if (result === 'approve') {
+            application.reviewStatus = 'approved';
+        } else {
+            application.reviewStatus = 'rejected';
+        }
+        saveApplications();
+        alert(`Application ${result === 'approve' ? 'approved' : 'rejected'}.`);
+        renderReviewDropdown();
+        renderPublishDropdown();
+        document.getElementById('reviewForm').reset();
+        document.getElementById('reviewForm').classList.remove('was-validated');
+        // Also update statistics in system overview if needed
+        updateSystemStats();
+    }
+
+    // Publish fixture: change fixture status to "Approved"
+    function publishFixture(event) {
+        event.preventDefault();
+        const select = document.getElementById('publishSelect');
+        const fixtureId = select.value;
+        if (!fixtureId) {
+            document.getElementById('publishForm').classList.add('was-validated');
+            return;
+        }
+        const fixture = fixtures.find(f => f.id === fixtureId);
+        if (fixture) {
+            fixture.status = "Approved";
+            saveFixtures();
+            // Remove the associated application from being shown again (optional: set status to 'published')
+            const app = applications.find(a => a.fixtureId === fixtureId && a.reviewStatus === 'approved');
+            if (app) app.reviewStatus = 'published';
+            saveApplications();
+            alert(`Fixture ${fixtureId} has been published with status "Approved".`);
+            renderPublishDropdown();
+            renderReviewDropdown(); // in case any other pending
+            updateSystemStats();
+            // Notify Fixture Assistant via storage event (automatic)
+        } else {
+            alert("Fixture not found.");
+        }
+        document.getElementById('publishForm').reset();
+        document.getElementById('publishForm').classList.remove('was-validated');
+    }
+
+    function updateSystemStats() {
+        const upcoming = fixtures.filter(f => f.status === 'Upcoming' || f.status === 'Approved').length;
+        const completed = fixtures.filter(f => f.status === 'Completed').length;
+        const statUp = document.getElementById('statUpcoming');
+        const statComp = document.getElementById('statCompleted');
+        if (statUp) statUp.innerText = upcoming;
+        if (statComp) statComp.innerText = completed;
+    }
+
+    // Navigation
+    window.show = function(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.menu-item').forEach(m => { if (m.getAttribute('onclick') && m.getAttribute('onclick').includes(id)) m.classList.add('active'); });
+        if (id === 'reviewApplication') renderReviewDropdown();
+        if (id === 'publishFixture') renderPublishDropdown();
+        if (id === 'systemOverview') updateSystemStats();
+    };
+
+    // Listen for changes from Fixture Assistant
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'rugby_fixtures') {
+            fixtures = JSON.parse(e.newValue);
+            updateSystemStats();
+            renderReviewDropdown();
+            renderPublishDropdown();
+        }
+        if (e.key === 'rugby_applications') {
+            applications = JSON.parse(e.newValue);
+            renderReviewDropdown();
+            renderPublishDropdown();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadData();
+        renderReviewDropdown();
+        renderPublishDropdown();
+        updateSystemStats();
+        document.getElementById('reviewForm').addEventListener('submit', submitReview);
+        document.getElementById('publishForm').addEventListener('submit', publishFixture);
+        // Bootstrap validation
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => { if (!form.checkValidity()) { event.preventDefault(); event.stopPropagation(); } form.classList.add('was-validated'); }, false);
+        });
+    });
+</script>
+</body>
+</html>

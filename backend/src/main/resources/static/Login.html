@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        form { width: 300px; margin: 0 auto; }
+        input, select { display: block; width: 100%; margin: 10px 0; padding: 8px; }
+        button { padding: 10px 20px; background: #2196F3; color: white; border: none; cursor: pointer; }
+        #error { color: red; display: none; }
+    </style>
+</head>
+<body>
+<h2>Login</h2>
+<form id="loginForm">
+    <label>Username:</label>
+    <input type="text" id="username" required>
+    <label>Password:</label>
+    <input type="password" id="password" required>
+    <label>Select Your Role</label>
+    <select id="role">
+        <option value="">-- Select --</option>
+        <option value="Player">Player</option>
+        <option value="Coach">Coach</option>
+        <option value="Chairperson">Chairperson</option>
+        <option value="Membership">Membership</option>
+        <option value="Membership Assistant">Membership Assistant</option>
+        <option value="Fixture Assistant">Fixture Assistant</option>
+        <option value="Nonplayer Member">Nonplayer Member</option>
+    </select>
+    <button type="submit">LOGIN</button>
+</form>
+<p id="error">Invalid username or password</p>
+<p>no account?<a href="Register.html">register</a></p>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const role = document.getElementById('role').value;
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (response.ok) {
+                document.getElementById('error').style.display = 'none';
+                alert('login successfully');
+                if (role === 'Player') window.location.href = 'Player.html';
+                else if (role === 'Coach') window.location.href = 'Coach.html';
+                else if (role === 'Chairperson') window.location.href = 'Chairperson.html';
+                else if (role === 'Membership Assistant') window.location.href = 'MembershipAssistant.html';
+                else if (role === 'Fixture Assistant') window.location.href = 'FixtureAssistant.html';
+                else if (role === 'Nonplayer Member') window.location.href = 'NonplayerMember.html';
+                else window.location.href = 'DifferentRoles.html';
+            } else {
+                document.getElementById('error').style.display = 'block';
+            }
+        } catch (err) {
+            alert('Internet error');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixture Assistant | Simply Rugby</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body{background:#f8f9fa;font-family:Arial}
+        .sidebar{min-height:100vh;background:#1e293b;color:white;padding:1.5rem 1rem;}
+        .sidebar h5{text-align:center;margin-bottom:1.5rem;padding-bottom:0.5rem;border-bottom:1px solid #334155;}
+        .sidebar a{color:#f1f5f9;display:block;padding:0.7rem 1rem;border-radius:6px;text-decoration:none;margin-bottom:0.3rem;cursor:pointer;}
+        .sidebar a:hover{background:#334155;}
+        .sidebar a.active{background:#0ea5e9;}
+        .content{padding:2rem;}
+        .section{display:none;}
+        .section.active{display:block;animation:fadeIn 0.3s ease;}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        .card{margin-bottom:1.5rem;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+        .card-header{background:#f8fafc;font-weight:600;}
+        .status-approved { color: #0a7e3a; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h5>Fixture Menu</h5>
+            <a onclick="show('dashboard')" class="menu-item active">Dashboard</a>
+            <a onclick="show('fixtureSchedule')" class="menu-item">Fixture Schedule</a>
+            <a onclick="show('createFixture')" class="menu-item">Create Fixture</a>
+            <a onclick="show('venueManage')" class="menu-item">Venue Manage</a>
+            <a onclick="show('submitApplication')" class="menu-item">Submit Application</a>
+            <a onclick="show('maintainFixture')" class="menu-item">Maintain Fixture</a>
+            <a href="login.html" class="mt-4">Logout</a>
+        </div>
+
+        <div class="col-md-10 content">
+            <!-- Dashboard -->
+            <div id="dashboard" class="section active">
+                <h3>Fixture Assistant Dashboard</h3>
+                <p class="text-muted">Manage all rugby match fixtures</p>
+                <div class="row mt-3">
+                    <div class="col-md-4"><div class="card p-3 text-center"><h5>Upcoming Fixtures</h5><h2 class="text-primary" id="upcomingCount">0</h2></div></div>
+                    <div class="col-md-4"><div class="card p-3 text-center"><h5>Completed Fixtures</h5><h2 class="text-success" id="completedCount">0</h2></div></div>
+                    <div class="col-md-4"><div class="card p-3 text-center"><h5>Venues Booked</h5><h2 class="text-warning">5</h2></div></div>
+                </div>
+            </div>
+
+            <!-- Fixture Schedule -->
+            <div id="fixtureSchedule" class="section">
+                <h3>Fixture Schedule</h3>
+                <div class="card">
+                    <div class="card-header">All Match Fixtures</div>
+                    <div class="card-body">
+                        <table class="table table-striped" id="fixtureTable">
+                            <thead>
+                            <tr><th>Fixture ID</th><th>Date</th><th>Time</th><th>Home Team</th><th>Away Team</th><th>Venue</th><th>Status</th></tr>
+                            </thead>
+                            <tbody id="fixtureTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Fixture -->
+            <div id="createFixture" class="section">
+                <h3>Create New Fixture</h3>
+                <div class="card">
+                    <div class="card-header">Fixture Details</div>
+                    <div class="card-body">
+                        <form id="createFixtureForm" class="needs-validation" novalidate>
+                            <div class="row mb-3">
+                                <div class="col-md-6"><label class="form-label">Match Date</label><input type="date" id="fixtureDate" class="form-control" required><div class="invalid-feedback">Required</div></div>
+                                <div class="col-md-6"><label class="form-label">Match Time</label><input type="time" id="fixtureTime" class="form-control" required><div class="invalid-feedback">Required</div></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6"><label class="form-label">Opponent Team</label><input type="text" id="opponentTeam" class="form-control" placeholder="Enter opponent name" required><div class="invalid-feedback">Required</div></div>
+                                <div class="col-md-6"><label class="form-label">Venue</label><select id="venueSelect" class="form-select" required><option value="">Select venue</option><option>Main Stadium</option><option>City Arena</option><option>Training Ground 1</option><option>Training Ground 2</option></select><div class="invalid-feedback">Required</div></div>
+                            </div>
+                            <div class="mb-3"><label class="form-label">Fixture Type</label><select id="fixtureType" class="form-select"><option>Friendly Match</option><option>League Match</option><option>Cup Match</option></select></div>
+                            <div class="mb-3"><label class="form-label">Notes</label><textarea id="fixtureNotes" class="form-control" rows="2"></textarea></div>
+                            <button type="submit" class="btn btn-primary">Create Fixture</button>
+                            <button type="reset" class="btn btn-outline-secondary ms-2">Reset</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venue Manage (unchanged) -->
+            <div id="venueManage" class="section">
+                <h3>Venue Management</h3>
+                <div class="card"><div class="card-header">Venue List & Availability</div><div class="card-body"><div class="row"><div class="col-md-6 mb-3"><div class="card border-primary"><div class="card-header bg-primary text-white">Main Stadium</div><div class="card-body"><p>Capacity: 5000</p><p>Facilities: Changing rooms, Medical room, Scoreboard</p><p class="text-success">Available: 2024-04-05</p><button class="btn btn-sm btn-primary">Book Venue</button></div></div></div><div class="col-md-6 mb-3"><div class="card border-warning"><div class="card-header bg-warning text-white">City Arena</div><div class="card-body"><p>Capacity: 3000</p><p>Facilities: Changing rooms, Snack bar</p><p class="text-danger">Unavailable: 2024-04-12 (Booked)</p><button class="btn btn-sm btn-primary">Check Availability</button></div></div></div></div></div></div>
+            </div>
+
+            <!-- Submit Application -->
+            <div id="submitApplication" class="section">
+                <h3>Submit Fixture Application</h3>
+                <div class="card"><div class="card-header">Application Form</div><div class="card-body"><form id="applicationForm" class="needs-validation" novalidate><div class="mb-3"><label class="form-label">Select Fixture</label><select id="appFixtureSelect" class="form-select" required><option value="">Choose fixture to apply</option></select><div class="invalid-feedback">Please select a fixture</div></div><div class="mb-3"><label class="form-label">Application Reason</label><textarea id="appReason" class="form-control" rows="3" required></textarea><div class="invalid-feedback">Reason is required</div></div><div class="mb-3"><label class="form-label">Required Facilities</label><div class="form-check"><input class="form-check-input" type="checkbox" id="fac1"><label class="form-check-label" for="fac1">Medical Support</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="fac2"><label class="form-check-label" for="fac2">Referee</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="fac3"><label class="form-check-label" for="fac3">Scoreboard</label></div></div><button type="submit" class="btn btn-primary">Submit Application</button></form></div></div>
+            </div>
+
+            <!-- Maintain Fixture (unchanged functionality) -->
+            <div id="maintainFixture" class="section">
+                <h3>Maintain/Update Fixtures</h3>
+                <div class="card"><div class="card-header">Update Fixture Details</div><div class="card-body"><div class="mb-3"><label class="form-label">Select Fixture to Update</label><select class="form-select" id="updateFixtureSelect"><option value="">Choose fixture</option></select></div><div id="fixtureUpdateForm" style="display: none;"><div class="row mb-3"><div class="col-md-6"><label class="form-label">New Date (if changed)</label><input type="date" class="form-control" id="updateDate"></div><div class="col-md-6"><label class="form-label">New Venue (if changed)</label><select class="form-select" id="updateVenue"><option value="">Keep current</option><option>Main Stadium</option><option>City Arena</option><option>Training Ground 1</option></select></div></div><div class="mb-3"><label class="form-label">Update Status</label><select class="form-select" id="updateStatus"><option>Upcoming</option><option>Completed</option><option>Cancelled</option><option>Postponed</option></select></div><div class="mb-3"><label class="form-label">Update Notes</label><textarea class="form-control" rows="2" id="updateNotes"></textarea></div><button class="btn btn-primary" id="saveUpdatesBtn">Save Updates</button></div><button class="btn btn-outline-primary mt-2" onclick="showUpdateForm()">Load Fixture</button></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ---------- Data Models ----------
+    let fixtures = [];     // each: { id, date, time, opponent, venue, type, notes, status }
+    let applications = []; // each: { id, fixtureId, reason, facilities, reviewStatus }
+
+    // Load from localStorage or init with demo data
+    function loadData() {
+        const storedFixtures = localStorage.getItem('rugby_fixtures');
+        const storedApps = localStorage.getItem('rugby_applications');
+        if (storedFixtures) {
+            fixtures = JSON.parse(storedFixtures);
+        } else {
+            // Demo fixtures
+            fixtures = [
+                { id: "F001", date: "2024-04-05", time: "15:00", opponent: "City Eagles", venue: "Main Stadium", type: "League Match", notes: "", status: "Upcoming" },
+                { id: "F002", date: "2024-04-12", time: "14:30", opponent: "West Tigers", venue: "City Arena", type: "League Match", notes: "", status: "Upcoming" },
+                { id: "F003", date: "2024-03-22", time: "13:00", opponent: "Storm Team", venue: "Training Ground 1", type: "Friendly Match", notes: "", status: "Completed" }
+            ];
+            saveFixtures();
+        }
+        if (storedApps) {
+            applications = JSON.parse(storedApps);
+        } else {
+            applications = [];
+            saveApplications();
+        }
+    }
+
+    function saveFixtures() { localStorage.setItem('rugby_fixtures', JSON.stringify(fixtures)); }
+    function saveApplications() { localStorage.setItem('rugby_applications', JSON.stringify(applications)); }
+
+    // Render Fixture Schedule table
+    function renderFixtureTable() {
+        const tbody = document.getElementById('fixtureTableBody');
+        if (!tbody) return;
+        if (fixtures.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center">No fixtures created yet.</td></tr>';
+        } else {
+            let html = '';
+            fixtures.forEach(f => {
+                let statusClass = (f.status === 'Approved') ? 'status-approved' : '';
+                html += `<tr>
+                            <td>${escapeHtml(f.id)}</td>
+                            <td>${escapeHtml(f.date)}</td>
+                            <td>${escapeHtml(f.time)}</td>
+                            <td>Simply Rugby</td>
+                            <td>${escapeHtml(f.opponent)}</td>
+                            <td>${escapeHtml(f.venue)}</td>
+                            <td class="${statusClass}">${escapeHtml(f.status)}</td>
+                         </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+        // Update dashboard counts
+        const upcoming = fixtures.filter(f => f.status === 'Upcoming' || f.status === 'Approved').length;
+        const completed = fixtures.filter(f => f.status === 'Completed').length;
+        document.getElementById('upcomingCount').innerText = upcoming;
+        document.getElementById('completedCount').innerText = completed;
+    }
+
+    // Populate dropdowns that list fixtures
+    function populateFixtureDropdowns() {
+        const appSelect = document.getElementById('appFixtureSelect');
+        const updateSelect = document.getElementById('updateFixtureSelect');
+        if (appSelect) {
+            let options = '<option value="">Choose fixture to apply</option>';
+            fixtures.forEach(f => {
+                if (f.status !== 'Completed' && f.status !== 'Cancelled') {
+                    options += `<option value="${f.id}">${f.id} - ${f.date} vs ${f.opponent}</option>`;
+                }
+            });
+            appSelect.innerHTML = options;
+        }
+        if (updateSelect) {
+            let options = '<option value="">Choose fixture</option>';
+            fixtures.forEach(f => {
+                options += `<option value="${f.id}">${f.id} - ${f.date} vs ${f.opponent}</option>`;
+            });
+            updateSelect.innerHTML = options;
+        }
+    }
+
+    // Create new fixture
+    function createFixture(event) {
+        event.preventDefault();
+        const form = document.getElementById('createFixtureForm');
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+        const date = document.getElementById('fixtureDate').value;
+        const time = document.getElementById('fixtureTime').value;
+        const opponent = document.getElementById('opponentTeam').value.trim();
+        const venue = document.getElementById('venueSelect').value;
+        const type = document.getElementById('fixtureType').value;
+        const notes = document.getElementById('fixtureNotes').value;
+        if (!date || !time || !opponent || !venue) return;
+
+        const newId = "F" + String(fixtures.length + 101).slice(-3);
+        const newFixture = {
+            id: newId,
+            date: date,
+            time: time,
+            opponent: opponent,
+            venue: venue,
+            type: type,
+            notes: notes,
+            status: "Upcoming"
+        };
+        fixtures.push(newFixture);
+        saveFixtures();
+        renderFixtureTable();
+        populateFixtureDropdowns();
+        form.reset();
+        form.classList.remove('was-validated');
+        alert(`Fixture ${newId} created successfully!`);
+    }
+
+    // Submit application
+    function submitApplication(event) {
+        event.preventDefault();
+        const form = document.getElementById('applicationForm');
+        const fixtureSelect = document.getElementById('appFixtureSelect');
+        const reason = document.getElementById('appReason').value.trim();
+        if (!fixtureSelect.value || !reason) {
+            form.classList.add('was-validated');
+            return;
+        }
+        const facilities = [];
+        if (document.getElementById('fac1').checked) facilities.push("Medical Support");
+        if (document.getElementById('fac2').checked) facilities.push("Referee");
+        if (document.getElementById('fac3').checked) facilities.push("Scoreboard");
+        const appId = "A" + Date.now();
+        applications.push({
+            id: appId,
+            fixtureId: fixtureSelect.value,
+            reason: reason,
+            facilities: facilities,
+            reviewStatus: "pending"
+        });
+        saveApplications();
+        form.reset();
+        document.querySelectorAll('#applicationForm .form-check-input').forEach(cb => cb.checked = false);
+        form.classList.remove('was-validated');
+        alert("Application submitted. Awaiting chairperson review.");
+    }
+
+    // Update fixture (maintain)
+    function saveFixtureUpdate() {
+        const select = document.getElementById('updateFixtureSelect');
+        const fixtureId = select.value;
+        if (!fixtureId) { alert("Please select a fixture first."); return; }
+        const fixture = fixtures.find(f => f.id === fixtureId);
+        if (!fixture) return;
+        const newDate = document.getElementById('updateDate').value;
+        const newVenue = document.getElementById('updateVenue').value;
+        const newStatus = document.getElementById('updateStatus').value;
+        if (newDate) fixture.date = newDate;
+        if (newVenue && newVenue !== "Keep current") fixture.venue = newVenue;
+        if (newStatus) fixture.status = newStatus;
+        saveFixtures();
+        renderFixtureTable();
+        populateFixtureDropdowns();
+        alert(`Fixture ${fixtureId} updated.`);
+        document.getElementById('fixtureUpdateForm').style.display = 'none';
+    }
+
+    window.showUpdateForm = function() {
+        const select = document.getElementById('updateFixtureSelect');
+        if (select.value) {
+            document.getElementById('fixtureUpdateForm').style.display = 'block';
+        } else {
+            alert('Please select a fixture first');
+        }
+    };
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    // Page navigation
+    window.show = function(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.menu-item').forEach(m => { if (m.getAttribute('onclick') && m.getAttribute('onclick').includes(id)) m.classList.add('active'); });
+        if (id === 'fixtureSchedule') renderFixtureTable();
+        if (id === 'submitApplication') populateFixtureDropdowns();
+        if (id === 'maintainFixture') populateFixtureDropdowns();
+    };
+
+    // Listen for storage changes from Chairperson page to auto-refresh
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'rugby_fixtures') {
+            fixtures = JSON.parse(e.newValue);
+            renderFixtureTable();
+            populateFixtureDropdowns();
+        }
+        if (e.key === 'rugby_applications') {
+            applications = JSON.parse(e.newValue);
+        }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        loadData();
+        renderFixtureTable();
+        populateFixtureDropdowns();
+        document.getElementById('createFixtureForm').addEventListener('submit', createFixture);
+        document.getElementById('applicationForm').addEventListener('submit', submitApplication);
+        document.getElementById('saveUpdatesBtn').addEventListener('click', saveFixtureUpdate);
+        // Bootstrap validation
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => { if (!form.checkValidity()) { event.preventDefault(); event.stopPropagation(); } form.classList.add('was-validated'); }, false);
+        });
+    });
+</script>
+</body>
+</html>

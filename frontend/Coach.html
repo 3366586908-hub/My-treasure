@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Portal | Simply Rugby</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background-color: #1e293b;
+            color: white;
+            padding: 1.5rem 1rem;
+        }
+        .sidebar h5 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #334155;
+        }
+        .sidebar a {
+            color: #f1f5f9;
+            display: block;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-bottom: 0.3rem;
+            cursor: pointer;
+        }
+        .sidebar a:hover {
+            background-color: #334155;
+        }
+        .sidebar a.active {
+            background-color: #0ea5e9;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .card {
+            margin-bottom: 1.5rem;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            background-color: #f8fafc;
+            font-weight: 600;
+        }
+        .records-table {
+            font-size: 0.9rem;
+        }
+        .records-table th {
+            background-color: #f1f5f9;
+        }
+        .badge-delete {
+            cursor: pointer;
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            transition: 0.2s;
+            display: inline-block;
+            text-align: center;
+        }
+        .badge-delete:hover {
+            background-color: #b91c1c;
+        }
+        .empty-records {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+        }
+        hr {
+            margin: 1rem 0;
+        }
+        .skill-level-badge {
+            background-color: #e2e8f0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-2 sidebar">
+            <h5>Coach Menu</h5>
+            <a onclick="show('dashboard')" class="menu-item active">Dashboard</a>
+            <a onclick="show('playerProfile')" class="menu-item">Player Profile</a>
+            <a onclick="show('teamManagement')" class="menu-item">Team Management</a>
+            <a onclick="show('trainingSessions')" class="menu-item">Training Sessions</a>
+            <a onclick="show('matchRecords')" class="menu-item">Match Records</a>
+            <a onclick="show('skillAssessment')" class="menu-item">Skill Assessment</a>
+            <a onclick="show('matchLineup')" class="menu-item">Match Lineup</a>
+            <a href="login.html" class="mt-4">Logout</a>
+        </div>
+
+        <div class="col-md-10 content">
+
+            <div id="dashboard" class="section active">
+                <h3>Coach Dashboard</h3>
+                <p class="text-muted">Welcome to your control panel</p>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="card p-3 text-center">
+                            <h5>Total Players</h5>
+                            <h2 class="text-primary" id="dashboardPlayerCount">0</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-3 text-center">
+                            <h5>Upcoming Trainings</h5>
+                            <h2 class="text-success">5</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-3 text-center">
+                            <h5>Upcoming Matches</h5>
+                            <h2 class="text-warning">3</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="playerProfile" class="section">
+                <h3>Player Profile Management</h3>
+
+                <div class="card mt-3">
+                    <div class="card-header bg-white">
+                        <strong>📋 Saved Player Records</strong>
+                        <span class="badge bg-secondary ms-2" id="playerCountBadge">0</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover records-table mb-0">
+                                <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Emergency Contact</th>
+                                    <th>Medical Info</th>
+                                    <th>Position</th>
+                                    <th style="width: 80px">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="playerRecordsList">
+                                <tr class="empty-records">
+                                    <td colspan="5">No player records yet. Add a new player above.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">➕ Create / Update Player</div>
+                    <div class="card-body">
+                        <form id="playerForm" class="needs-validation" novalidate>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label>Full Name *</label>
+                                    <input type="text" id="playerFullName" class="form-control" required>
+                                    <div class="invalid-feedback">Full name is required</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Emergency Contact *</label>
+                                    <input type="text" id="playerEmergencyContact" class="form-control" required>
+                                    <div class="invalid-feedback">Emergency contact required</div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label>Medical Info</label>
+                                    <input type="text" id="playerMedicalInfo" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Position *</label>
+                                    <select id="playerPosition" class="form-select" required>
+                                        <option value="">Select position</option>
+                                        <option>Prop</option>
+                                        <option>Hooker</option>
+                                        <option>Lock</option>
+                                        <option>Flanker</option>
+                                        <option>Number 8</option>
+                                        <option>Scrum-half</option>
+                                        <option>Fly-half</option>
+                                        <option>Center</option>
+                                        <option>Wing</option>
+                                        <option>Fullback</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a position</div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Player</button>
+                            <button type="button" id="clearPlayerFormBtn" class="btn btn-outline-secondary ms-2">Clear Form</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="teamManagement" class="section">
+                <h3>Team Management</h3>
+                <div class="card mt-3">
+                    <div class="card-header">Team Structure</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card border-primary">
+                                    <div class="card-header bg-primary text-white">Senior Team</div>
+                                    <div class="card-body">28 Players</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-success">
+                                    <div class="card-header bg-success text-white">U21 Team</div>
+                                    <div class="card-body">24 Players</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-warning">
+                                    <div class="card-header bg-warning text-white">U18 Team</div>
+                                    <div class="card-body">32 Players</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="trainingSessions" class="section">
+                <h3>Training Sessions</h3>
+
+                <div class="card mt-3">
+                    <div class="card-header bg-white">
+                        <strong>📅 Scheduled Training Records</strong>
+                        <span class="badge bg-secondary ms-2" id="trainingCountBadge">0</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover records-table mb-0">
+                                <thead>
+                                <tr>
+                                    <th>Training Date</th>
+                                    <th>Topic / Focus</th>
+                                    <th style="width: 80px">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="trainingRecordsList">
+                                <tr class="empty-records">
+                                    <td colspan="3">No training sessions yet. Create one below.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">🏋️ Create Training Session</div>
+                    <div class="card-body">
+                        <form id="trainingForm" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label>Training Date *</label>
+                                <input type="date" id="trainingDate" class="form-control" required>
+                                <div class="invalid-feedback">Please select a valid date</div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Topic / Focus *</label>
+                                <input type="text" id="trainingTopic" class="form-control" placeholder="e.g., Rucking drills, Backline moves..." required>
+                                <div class="invalid-feedback">Topic is required</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create Training</button>
+                            <button type="button" id="clearTrainingFormBtn" class="btn btn-outline-secondary ms-2">Clear Form</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="matchRecords" class="section">
+                <h3>Match Records</h3>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr><th>Match ID</th><th>Opponent</th><th>Result</th></tr>
+                            </thead>
+                            <tbody>
+                            <tr><td>M001</td><td>City Eagles</td><td>Win 28-14</td></tr>
+                            <tr><td>M002</td><td>Storm Team</td><td>Loss 12-18</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="skillAssessment" class="section">
+                <h3>Player Skill Assessment</h3>
+
+                <div class="card mt-3">
+                    <div class="card-header bg-white">
+                        <strong>📊 Saved Skill Assessments</strong>
+                        <span class="badge bg-secondary ms-2" id="skillCountBadge">0</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover records-table mb-0">
+                                <thead>
+                                <tr>
+                                    <th>Player Name</th>
+                                    <th>Skill Level</th>
+                                    <th>Assessment Date</th>
+                                    <th style="width: 80px">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="skillAssessmentList">
+                                <tr class="empty-records">
+                                    <td colspan="4">No skill assessments yet. Add a new assessment above.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">⭐ New Skill Assessment</div>
+                    <div class="card-body">
+                        <form id="skillAssessmentForm" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label>Select Player *</label>
+                                <select id="skillPlayerSelect" class="form-select" required>
+                                    <option value="">-- No players available, please add players first --</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a player</div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Skill Level *</label>
+                                <select id="skillLevelSelect" class="form-select" required>
+                                    <option value="">Choose level</option>
+                                    <option>Beginner</option>
+                                    <option>Intermediate</option>
+                                    <option>Advanced</option>
+                                    <option>Elite</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a skill level</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Assessment</button>
+                            <button type="button" id="clearSkillFormBtn" class="btn btn-outline-secondary ms-2">Clear Form</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="matchLineup" class="section">
+                <h3>Match Lineup</h3>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5>Starting XV</h5>
+                        <table class="table table-sm">
+                            <tr><td>1. Prop</td><td>John Doe</td></tr>
+                            <tr><td>2. Hooker</td><td>Mike Smith</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let playersData = [];
+    let trainingSessions = [];
+    let skillAssessments = [];
+
+    function saveToLocalStorage() {
+        localStorage.setItem('rugby_coach_players', JSON.stringify(playersData));
+        localStorage.setItem('rugby_coach_trainings', JSON.stringify(trainingSessions));
+        localStorage.setItem('rugby_coach_assessments', JSON.stringify(skillAssessments));
+    }
+
+    function loadFromLocalStorage() {
+        const storedPlayers = localStorage.getItem('rugby_coach_players');
+        const storedTrainings = localStorage.getItem('rugby_coach_trainings');
+        const storedAssessments = localStorage.getItem('rugby_coach_assessments');
+
+        if (storedPlayers) playersData = JSON.parse(storedPlayers);
+        else playersData = [];
+
+        if (storedTrainings) trainingSessions = JSON.parse(storedTrainings);
+        else trainingSessions = [];
+
+        if (storedAssessments) skillAssessments = JSON.parse(storedAssessments);
+        else skillAssessments = [];
+    }
+
+    function renderPlayerRecords() {
+        const tbody = document.getElementById('playerRecordsList');
+        const countBadge = document.getElementById('playerCountBadge');
+        const dashboardCount = document.getElementById('dashboardPlayerCount');
+        if (!tbody) return;
+
+        if (playersData.length === 0) {
+            tbody.innerHTML = '<tr class="empty-records"><td colspan="5">No player records yet. Add a new player above.</td></tr>';
+            if (countBadge) countBadge.innerText = '0';
+            if (dashboardCount) dashboardCount.innerText = '0';
+        } else {
+            let html = '';
+            playersData.forEach((player, index) => {
+                html += `
+                    <tr>
+                        <td>${escapeHtml(player.fullName)}</td>
+                        <td>${escapeHtml(player.emergencyContact)}</td>
+                        <td>${escapeHtml(player.medicalInfo || '—')}</td>
+                        <td>${escapeHtml(player.position)}</td>
+                        <td><span class="badge-delete" data-player-index="${index}" onclick="deletePlayerRecord(${index})">Delete</span></td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+            if (countBadge) countBadge.innerText = playersData.length;
+            if (dashboardCount) dashboardCount.innerText = playersData.length;
+        }
+
+        updateSkillPlayerDropdown();
+    }
+
+    window.deletePlayerRecord = function(index) {
+        if (index >= 0 && index < playersData.length) {
+            const deletedPlayerName = playersData[index].fullName;
+            if (confirm(`Remove player "${deletedPlayerName}"? All skill assessments for this player will also be deleted.`)) {
+                playersData.splice(index, 1);
+                skillAssessments = skillAssessments.filter(assessment => assessment.playerName !== deletedPlayerName);
+                renderPlayerRecords();
+                renderSkillAssessments();
+                saveToLocalStorage();
+            }
+        }
+    };
+
+    function addPlayerFromForm() {
+        const form = document.getElementById('playerForm');
+        const fullNameInput = document.getElementById('playerFullName');
+        const emergencyContactInput = document.getElementById('playerEmergencyContact');
+        const medicalInfoInput = document.getElementById('playerMedicalInfo');
+        const positionSelect = document.getElementById('playerPosition');
+
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return false;
+        }
+
+        const fullName = fullNameInput.value.trim();
+        const emergencyContact = emergencyContactInput.value.trim();
+        const medicalInfo = medicalInfoInput.value.trim();
+        const position = positionSelect.value;
+
+        if (!fullName || !emergencyContact || !position) {
+            form.classList.add('was-validated');
+            return false;
+        }
+
+        if (playersData.some(p => p.fullName === fullName)) {
+            alert(`Player "${fullName}" already exists. Use a different name.`);
+            return false;
+        }
+
+        playersData.push({
+            fullName: fullName,
+            emergencyContact: emergencyContact,
+            medicalInfo: medicalInfo,
+            position: position
+        });
+
+        renderPlayerRecords();
+        saveToLocalStorage();
+
+        fullNameInput.value = '';
+        emergencyContactInput.value = '';
+        medicalInfoInput.value = '';
+        positionSelect.value = '';
+        form.classList.remove('was-validated');
+        fullNameInput.focus();
+        return true;
+    }
+
+    function clearPlayerForm() {
+        const form = document.getElementById('playerForm');
+        document.getElementById('playerFullName').value = '';
+        document.getElementById('playerEmergencyContact').value = '';
+        document.getElementById('playerMedicalInfo').value = '';
+        document.getElementById('playerPosition').value = '';
+        form.classList.remove('was-validated');
+    }
+
+    function renderTrainingRecords() {
+        const tbody = document.getElementById('trainingRecordsList');
+        const countBadge = document.getElementById('trainingCountBadge');
+        if (!tbody) return;
+
+        if (trainingSessions.length === 0) {
+            tbody.innerHTML = '<tr class="empty-records"><td colspan="3">No training sessions yet. Create one below.</td></tr>';
+            if (countBadge) countBadge.innerText = '0';
+        } else {
+            let html = '';
+            trainingSessions.forEach((session, idx) => {
+                html += `
+                    <tr>
+                        <td>${escapeHtml(session.date)}</td>
+                        <td>${escapeHtml(session.topic)}</td>
+                        <td><span class="badge-delete" onclick="deleteTrainingRecord(${idx})">Delete</span></td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+            if (countBadge) countBadge.innerText = trainingSessions.length;
+        }
+    }
+
+    window.deleteTrainingRecord = function(index) {
+        if (index >= 0 && index < trainingSessions.length) {
+            if (confirm('Remove this training session?')) {
+                trainingSessions.splice(index, 1);
+                renderTrainingRecords();
+                saveToLocalStorage();
+            }
+        }
+    };
+
+    function addTrainingFromForm() {
+        const form = document.getElementById('trainingForm');
+        const dateInput = document.getElementById('trainingDate');
+        const topicInput = document.getElementById('trainingTopic');
+
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return false;
+        }
+
+        const date = dateInput.value.trim();
+        const topic = topicInput.value.trim();
+        if (!date || !topic) {
+            form.classList.add('was-validated');
+            return false;
+        }
+
+        trainingSessions.push({ date: date, topic: topic });
+        renderTrainingRecords();
+        saveToLocalStorage();
+
+        dateInput.value = '';
+        topicInput.value = '';
+        form.classList.remove('was-validated');
+        dateInput.focus();
+        return true;
+    }
+
+    function clearTrainingForm() {
+        const form = document.getElementById('trainingForm');
+        document.getElementById('trainingDate').value = '';
+        document.getElementById('trainingTopic').value = '';
+        form.classList.remove('was-validated');
+    }
+
+    function renderSkillAssessments() {
+        const tbody = document.getElementById('skillAssessmentList');
+        const countBadge = document.getElementById('skillCountBadge');
+        if (!tbody) return;
+
+        if (skillAssessments.length === 0) {
+            tbody.innerHTML = '<tr class="empty-records"><td colspan="4">No skill assessments yet. Add a new assessment above.</td></tr>';
+            if (countBadge) countBadge.innerText = '0';
+        } else {
+            let html = '';
+            skillAssessments.forEach((assessment, idx) => {
+                html += `
+                    <tr>
+                        <td>${escapeHtml(assessment.playerName)}</td>
+                        <td><span class="skill-level-badge">${escapeHtml(assessment.skillLevel)}</span></td>
+                        <td>${escapeHtml(assessment.assessmentDate)}</td>
+                        <td><span class="badge-delete" onclick="deleteSkillAssessment(${idx})">Delete</span></td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+            if (countBadge) countBadge.innerText = skillAssessments.length;
+        }
+    }
+
+    window.deleteSkillAssessment = function(index) {
+        if (index >= 0 && index < skillAssessments.length) {
+            if (confirm('Remove this skill assessment?')) {
+                skillAssessments.splice(index, 1);
+                renderSkillAssessments();
+                saveToLocalStorage();
+            }
+        }
+    };
+
+    function updateSkillPlayerDropdown() {
+        const selectEl = document.getElementById('skillPlayerSelect');
+        if (!selectEl) return;
+
+        if (playersData.length === 0) {
+            selectEl.innerHTML = '<option value="">-- No players available, please add players first --</option>';
+            selectEl.disabled = true;
+        } else {
+            selectEl.disabled = false;
+            let options = '<option value="">-- Select a player --</option>';
+            playersData.forEach(player => {
+                options += `<option value="${escapeHtml(player.fullName)}">${escapeHtml(player.fullName)}</option>`;
+            });
+            selectEl.innerHTML = options;
+        }
+    }
+
+    function addSkillAssessmentFromForm() {
+        const form = document.getElementById('skillAssessmentForm');
+        const playerSelect = document.getElementById('skillPlayerSelect');
+        const skillLevelSelect = document.getElementById('skillLevelSelect');
+
+        let isValid = true;
+        if (!playerSelect.value || playerSelect.value === "") {
+            playerSelect.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            playerSelect.classList.remove('is-invalid');
+        }
+        if (!skillLevelSelect.value || skillLevelSelect.value === "") {
+            skillLevelSelect.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            skillLevelSelect.classList.remove('is-invalid');
+        }
+
+        if (!isValid) {
+            form.classList.add('was-validated');
+            return false;
+        }
+
+        const selectedPlayer = playerSelect.value;
+        const selectedLevel = skillLevelSelect.value;
+        const today = new Date().toLocaleDateString('en-CA');
+
+        skillAssessments.push({
+            playerName: selectedPlayer,
+            skillLevel: selectedLevel,
+            assessmentDate: today
+        });
+
+        renderSkillAssessments();
+        saveToLocalStorage();
+
+        playerSelect.value = "";
+        skillLevelSelect.value = "";
+        form.classList.remove('was-validated');
+        skillLevelSelect.focus();
+
+        return true;
+    }
+
+    function clearSkillForm() {
+        const form = document.getElementById('skillAssessmentForm');
+        document.getElementById('skillPlayerSelect').value = "";
+        document.getElementById('skillLevelSelect').value = "";
+        form.classList.remove('was-validated');
+        document.getElementById('skillPlayerSelect').classList.remove('is-invalid');
+        document.getElementById('skillLevelSelect').classList.remove('is-invalid');
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (form.id === 'playerForm') {
+                addPlayerFromForm();
+            }
+            else if (form.id === 'trainingForm') {
+                addTrainingFromForm();
+            }
+            else if (form.id === 'skillAssessmentForm') {
+                addSkillAssessmentFromForm();
+            }
+            else {
+                if (form.classList.contains('needs-validation')) {
+                    if (!form.checkValidity()) {
+                        form.classList.add('was-validated');
+                    } else {
+                        alert('Feature demo: Data would be saved to server in production environment.');
+                        form.reset();
+                        form.classList.remove('was-validated');
+                    }
+                }
+            }
+        });
+    });
+
+    document.getElementById('clearPlayerFormBtn')?.addEventListener('click', clearPlayerForm);
+    document.getElementById('clearTrainingFormBtn')?.addEventListener('click', clearTrainingForm);
+    document.getElementById('clearSkillFormBtn')?.addEventListener('click', clearSkillForm);
+
+    function attachBlurValidation(input, formId) {
+        if (!input) return;
+        input.addEventListener('blur', function() {
+            const form = document.getElementById(formId);
+            if (form && form.classList.contains('was-validated')) {
+                if (input.checkValidity && !input.validity.valid) {
+                    input.classList.add('is-invalid');
+                } else if (input.checkValidity && input.validity.valid) {
+                    input.classList.remove('is-invalid');
+                }
+            }
+        });
+    }
+    attachBlurValidation(document.getElementById('playerFullName'), 'playerForm');
+    attachBlurValidation(document.getElementById('playerEmergencyContact'), 'playerForm');
+    attachBlurValidation(document.getElementById('playerPosition'), 'playerForm');
+    attachBlurValidation(document.getElementById('trainingDate'), 'trainingForm');
+    attachBlurValidation(document.getElementById('trainingTopic'), 'trainingForm');
+    attachBlurValidation(document.getElementById('skillPlayerSelect'), 'skillAssessmentForm');
+    attachBlurValidation(document.getElementById('skillLevelSelect'), 'skillAssessmentForm');
+
+    window.show = function(sectionId) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.menu-item').forEach(m => {
+            if (m.getAttribute('onclick') && m.getAttribute('onclick').includes(sectionId)) {
+                m.classList.add('active');
+            }
+        });
+        if (sectionId === 'skillAssessment') {
+            updateSkillPlayerDropdown();
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFromLocalStorage();
+        renderPlayerRecords();
+        renderTrainingRecords();
+        renderSkillAssessments();
+        updateSkillPlayerDropdown();
+    });
+</script>
+</body>
+</html>

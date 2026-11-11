@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #1e293b;
+            color: white;
+            padding: 1.5rem 1rem;
+        }
+        .sidebar a {
+            color: #f1f5f9;
+            display: block;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-bottom: 0.3rem;
+        }
+        .sidebar a:hover {
+            background-color: #334155;
+        }
+        .content {
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar" id="sidebar"></div>
+        <div class="col-md-10 content">
+            <h2>Dashboard</h2>
+            <p class="text-muted">Welcome to Simply Rugby Club Management System</p>
+            <a href="login.html" class="btn btn-outline-danger">Logout</a>
+
+            <div class="mt-4 row g-3">
+                <div class="col-md-3">
+                    <div class="card p-3 border-0 shadow-sm">
+                        <h5>Members</h5>
+                        <h3 class="text-primary">126</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3 border-0 shadow-sm">
+                        <h5>Players</h5>
+                        <h3 class="text-success">84</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3 border-0 shadow-sm">
+                        <h5>Fixtures</h5>
+                        <h3 class="text-warning">12</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3 border-0 shadow-sm">
+                        <h5>Trainings</h5>
+                        <h3 class="text-info">28</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get('role');
+
+    const routeMap = {
+        coach: 'coach.html',
+        memberSecretary: 'member-secretary.html',
+        player: 'player.html',
+        fixtureAssistant: 'fixture-assistant.html',
+        chairperson: 'chairperson.html',
+        memberAssistant: 'member-assistant.html',
+        nonPlayerMember: 'non-player-member.html'
+    };
+
+    const target = routeMap[role] || 'login.html';
+    window.location.href = target;
+</script>
+</body>
+</html>

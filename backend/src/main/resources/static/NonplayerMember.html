@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-player Member | Simply Rugby</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body{background:#f8f9fa;font-family:Arial}
+        .sidebar{min-height:100vh;background:#1e293b;color:white;padding:1.5rem 1rem;}
+        .sidebar h5{text-align:center;margin-bottom:1.5rem;padding-bottom:0.5rem;border-bottom:1px solid #334155;}
+        .sidebar a{color:#f1f5f9;display:block;padding:0.7rem 1rem;border-radius:6px;text-decoration:none;margin-bottom:0.3rem;cursor:pointer;}
+        .sidebar a:hover{background:#334155;}
+        .sidebar a.active{background:#0ea5e9;}
+        .content{padding:2rem;}
+        .section{display:none;}
+        .section.active{display:block;animation:fadeIn 0.3s ease;}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        .card{margin-bottom:1.5rem;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+        .card-header{background:#f8fafc;font-weight:600;}
+        .badge {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-2 sidebar">
+            <h5>Member Menu</h5>
+            <a onclick="show('dashboard')" class="menu-item active">Dashboard</a>
+            <a onclick="show('clubNews')" class="menu-item">Club News</a>
+            <a onclick="show('fixtureInfo')" class="menu-item">Fixture Info</a>
+            <a onclick="show('myMembership')" class="menu-item">My Membership</a>
+            <a onclick="show('myMessages')" class="menu-item">My Messages</a>
+            <a href="login.html" class="mt-4">Logout</a>
+        </div>
+
+
+        <div class="col-md-10 content">
+
+            <div id="dashboard" class="section active">
+                <h3>Member Dashboard</h3>
+                <p class="text-muted">Welcome to Simply Rugby Club Member Portal</p>
+                <div class="row mt-3">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">Latest Updates</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <h6>Upcoming Fixture: 2024-04-05 vs City Eagles</h6>
+                                    <p>Match will be held at Main Stadium, 2:00 PM. All members welcome!</p>
+                                </div>
+                                <div class="mb-3">
+                                    <h6>Club Social Event: 2024-04-15</h6>
+                                    <p>Annual club dinner at City Hotel, 7:00 PM. RSVP by 2024-04-08.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">Your Membership</div>
+                            <div class="card-body">
+                                <p><strong>Member ID:</strong> NM042</p>
+                                <p><strong>Type:</strong> Social Member</p>
+                                <p><strong>Status:</strong> <span class="badge bg-success">Active</span></p>
+                                <p><strong>Expiry Date:</strong> 2024-12-31</p>
+                                <button class="btn btn-sm btn-outline-primary">Renew Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="clubNews" class="section">
+                <h3>Club News & Announcements</h3>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Club Dinner Announcement</h6>
+                            <small class="text-muted">2024-03-18</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Our annual club dinner will be held on Monday, 15th April at City Hotel starting at 7:00 PM.</p>
+                        <p>Cost: $50 per person, includes 3-course meal and drinks.</p>
+                        <p>Please RSVP to membership secretary by 8th April to confirm attendance.</p>
+                        <button class="btn btn-sm btn-primary">RSVP Now</button>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">New Training Equipment</h6>
+                            <small class="text-muted">2024-03-10</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>The club has purchased new training equipment including tackle bags and agility poles.</p>
+                        <p>All training sessions will now use the new equipment to improve player skills.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Membership Renewal Reminder</h6>
+                            <small class="text-muted">2024-03-05</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Memberships expiring in June 2024 can now be renewed online via the member portal.</p>
+                        <p>Early renewal discount available until 30th April.</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="fixtureInfo" class="section">
+                <h3>Fixture Information</h3>
+                <div class="card">
+                    <div class="card-header">Upcoming Matches</div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Opponent</th>
+                                <th>Venue</th>
+                                <th>Time</th>
+                                <th>Entry</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>2024-04-05</td>
+                                <td>City Eagles</td>
+                                <td>Main Stadium</td>
+                                <td>14:00</td>
+                                <td>Free for members</td>
+                            </tr>
+                            <tr>
+                                <td>2024-04-12</td>
+                                <td>West Tigers</td>
+                                <td>City Arena</td>
+                                <td>15:00</td>
+                                <td>Free for members</td>
+                            </tr>
+                            <tr>
+                                <td>2024-04-19</td>
+                                <td>Northern Lions</td>
+                                <td>Main Stadium</td>
+                                <td>14:00</td>
+                                <td>Free for members</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Recent Match Results</div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Opponent</th>
+                                <th>Result</th>
+                                <th>Score</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>2024-03-22</td>
+                                <td>Storm Team</td>
+                                <td>Loss</td>
+                                <td>12-18</td>
+                            </tr>
+                            <tr>
+                                <td>2024-03-15</td>
+                                <td>East Dragons</td>
+                                <td>Win</td>
+                                <td>24-10</td>
+                            </tr>
+                            <tr>
+                                <td>2024-03-08</td>
+                                <td>South Sharks</td>
+                                <td>Draw</td>
+                                <td>14-14</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="myMembership" class="section">
+                <h3>My Membership Details</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Personal Information</h5>
+                                <hr>
+                                <p><strong>Full Name:</strong> Sarah Thompson</p>
+                                <p><strong>Email:</strong> sarah.thompson@example.com</p>
+                                <p><strong>Phone:</strong> +44 1234 567890</p>
+                                <p><strong>Address:</strong> 123 Main Street, Cityville</p>
+                                <button class="btn btn-sm btn-outline-primary mt-2">Update Details</button>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Membership Details</h5>
+                                <hr>
+                                <p><strong>Member ID:</strong> NM042</p>
+                                <p><strong>Membership Type:</strong> Social Member</p>
+                                <p><strong>Joined Date:</strong> 2023-01-15</p>
+                                <p><strong>Expiry Date:</strong> 2024-12-31</p>
+                                <p><strong>Payment Status:</strong> <span class="badge bg-success">Paid</span></p>
+                                <div class="mt-3">
+                                    <button class="btn btn-primary">Renew Membership</button>
+                                    <button class="btn btn-outline-secondary ms-2">View Payment History</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-header">Membership Benefits</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Free entry to all home matches</li>
+                            <li>10% discount at club shop</li>
+                            <li>Invitation to club social events</li>
+                            <li>Access to member-only content</li>
+                            <li>Discounted rates for club facilities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="myMessages" class="section">
+                <h3>My Messages</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-header">Inbox</div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <a href="#" class="list-group-item list-group-item-action active">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Membership Renewal Reminder</h6>
+                                            <small>05/03/2024</small>
+                                        </div>
+                                        <small>Membership Secretary</small>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Club Dinner Invitation</h6>
+                                            <small>18/03/2024</small>
+                                        </div>
+                                        <small>Club Administrator</small>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Match Day Information</h6>
+                                            <small>20/03/2024</small>
+                                        </div>
+                                        <small>Fixture Secretary</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Membership Renewal Reminder</h6>
+                                    <small>05/03/2024</small>
+                                </div>
+                                <small class="text-muted">From: Membership Secretary</small>
+                            </div>
+                            <div class="card-body">
+                                <p>Dear Sarah,</p>
+                                <p>Your membership is due to expire on 31st December 2024. You can now renew your membership online via the member portal.</p>
+                                <p>Renew before 30th April to receive a 10% early renewal discount.</p>
+                                <p>If you have any questions, please contact the membership secretary at membership@simplyrugby.com.</p>
+                                <p>Kind regards,<br>Membership Secretary<br>Simply Rugby Club</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-sm btn-outline-primary">Reply</button>
+                                <button class="btn btn-sm btn-outline-secondary ms-2">Forward</button>
+                                <button class="btn btn-sm btn-outline-danger ms-2">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.menu-item').forEach(m => {
+            if (m.getAttribute('onclick').includes(id)) m.classList.add('active');
+        });
+    }
+</script>
+</body>
+</html>

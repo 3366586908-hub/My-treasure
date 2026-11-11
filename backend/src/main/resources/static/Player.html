@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player | Simply Rugby</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body{background:#f8f9fa;font-family:Arial}
+        .sidebar{min-height:100vh;background:#1e293b;color:white;padding:1.5rem 1rem;}
+        .sidebar h5{text-align:center;margin-bottom:1.5rem;padding-bottom:0.5rem;border-bottom:1px solid #334155;}
+        .sidebar a{color:#f1f5f9;display:block;padding:0.7rem 1rem;border-radius:6px;text-decoration:none;margin-bottom:0.3rem;cursor:pointer;}
+        .sidebar a:hover{background:#334155;}
+        .sidebar a.active{background:#0ea5e9;}
+        .content{padding:2rem;}
+        .section{display:none;}
+        .section.active{display:block;animation:fadeIn 0.3s ease;}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        .card{margin-bottom:1.5rem;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+        .card-header{background:#f8fafc;font-weight:600;}
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h5>Player Menu</h5>
+            <a onclick="show('dashboard')" class="menu-item active">Dashboard</a>
+            <a onclick="show('myProfile')" class="menu-item">My Profile</a>
+            <a onclick="show('myTraining')" class="menu-item">My Training</a>
+            <a onclick="show('myMatches')" class="menu-item">My Matches</a>
+            <a onclick="show('skillReport')" class="menu-item">Skill Report</a>
+            <a onclick="show('trainingCheckin')" class="menu-item">Training Check-in</a>
+            <a href="login.html" class="mt-4">Logout</a>
+        </div>
+        <div class="col-md-10 content">
+            <div id="dashboard" class="section active"><h3>Player Dashboard</h3><p>Welcome to your player hub</p></div>
+            <div id="myProfile" class="section"><h3>My Profile</h3><div class="card"><div class="card-body"><p>Name: John Doe</p><p>Position: Forward</p></div></div></div>
+            <div id="myTraining" class="section"><h3>My Training</h3><div class="card"><div class="card-body"><table class="table"><tr><th>Date</th><th>Topic</th></tr></table></div></div></div>
+            <div id="myMatches" class="section"><h3>My Matches</h3><div class="card"><div class="card-body"><table class="table"><tr><th>Opponent</th><th>Result</th></tr></table></div></div></div>
+            <div id="skillReport" class="section"><h3>Skill Report</h3><div class="card"><div class="card-body"><p>Passing: 8/10</p><p>Tracking:7/10</p></div></div></div>
+            <div id="trainingCheckin" class="section"><h3>Training Check-in</h3><div class="card"><div class="card-body"><button class="btn btn-primary">Check In</button></div></div></div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));document.querySelectorAll('.menu-item').forEach(m=>{if(m.innerHTML.toLowerCase().includes(id.split(/(?=[A-Z])/).join(' ').toLowerCase()))m.classList.add('active');});}
+</script>
+</body>
+</html>

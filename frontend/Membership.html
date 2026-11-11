@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membership Assistant | Simply Rugby</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body{background:#f8f9fa;font-family:Arial}
+        .sidebar{min-height:100vh;background:#1e293b;color:white;padding:1.5rem 1rem;}
+        .sidebar h5{text-align:center;margin-bottom:1.5rem;padding-bottom:0.5rem;border-bottom:1px solid #334155;}
+        .sidebar a{color:#f1f5f9;display:block;padding:0.7rem 1rem;border-radius:6px;text-decoration:none;margin-bottom:0.3rem;cursor:pointer;}
+        .sidebar a:hover{background:#334155;}
+        .sidebar a.active{background:#0ea5e9;}
+        .content{padding:2rem;}
+        .section{display:none;}
+        .section.active{display:block;animation:fadeIn 0.3s ease;}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        .card{margin-bottom:1.5rem;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+        .card-header{background:#f8fafc;font-weight:600;}
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-2 sidebar">
+            <h5>Assistant Menu</h5>
+            <a onclick="show('dashboard')" class="menu-item active">Dashboard</a>
+            <a onclick="show('trackTraining')" class="menu-item">Track Training</a>
+            <a onclick="show('trackSkill')" class="menu-item">Track Skill</a>
+            <a onclick="show('memberInfo')" class="menu-item">Member Info</a>
+            <a onclick="show('sendMessages')" class="menu-item">Send Messages</a>
+            <a href="login.html" class="mt-4">Logout</a>
+        </div>
+
+
+        <div class="col-md-10 content">
+
+
+            <div id="dashboard" class="section active">
+                <h3>Membership Assistant Dashboard</h3>
+                <p class="text-muted">Track training, members & communications</p>
+                <div class="row mt-3">
+                    <div class="col-md-3"><div class="card p-3 text-center"><h5>Today’s Training</h5><h2 class="text-primary">1</h2></div></div>
+                    <div class="col-md-3"><div class="card p-3 text-center"><h5>Players Tracked</h5><h2 class="text-success">84</h2></div></div>
+                    <div class="col-md-3"><div class="card p-3 text-center"><h5>Unread Messages</h5><h2 class="text-warning">5</h2></div></div>
+                    <div class="col-md-3"><div class="card p-3 text-center"><h5>New Members</h5><h2 class="text-danger">3</h2></div></div>
+                </div>
+            </div>
+
+
+            <div id="trackTraining" class="section">
+                <h3>Track Player Training</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <form class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label>Select Player</label>
+                                <select class="form-select" required>
+                                    <option value="">Choose player</option>
+                                    <option>John Doe</option>
+                                    <option>Mike Smith</option>
+                                </select>
+                                <div class="invalid-feedback">Required</div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Training Date</label>
+                                <input type="date" class="form-control" required>
+                                <div class="invalid-feedback">Required</div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Attendance</label>
+                                <select class="form-select" required>
+                                    <option value="">Select</option>
+                                    <option>Attended</option>
+                                    <option>Absent</option>
+                                </select>
+                                <div class="invalid-feedback">Required</div>
+                            </div>
+                            <button class="btn btn-primary">Save Record</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="trackSkill" class="section">
+                <h3>Track Player Skill Progress</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Passing</th>
+                                <th>Tackling</th>
+                                <th>Running</th>
+                                <th>Last Updated</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>8/10</td>
+                                <td>7/10</td>
+                                <td>8/10</td>
+                                <td>2024-03-15</td>
+                            </tr>
+                            <tr>
+                                <td>Mike Smith</td>
+                                <td>7/10</td>
+                                <td>8/10</td>
+                                <td>7/10</td>
+                                <td>2024-03-18</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="memberInfo" class="section">
+                <h3>Member Information</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <input type="text" class="form-control mb-3" placeholder="Search member...">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>Player</td>
+                                <td>john@example.com</td>
+                                <td>Active</td>
+                            </tr>
+                            <tr>
+                                <td>Sarah Jones</td>
+                                <td>Non-player</td>
+                                <td>sarah@example.com</td>
+                                <td>Active</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="sendMessages" class="section">
+                <h3>Send Messages to Members</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <form class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label>Recipient Group</label>
+                                <select class="form-select" required>
+                                    <option value="">Select group</option>
+                                    <option>All Members</option>
+                                    <option>Players Only</option>
+                                    <option>Non-players Only</option>
+                                </select>
+                                <div class="invalid-feedback">Required</div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Subject</label>
+                                <input type="text" class="form-control" required>
+                                <div class="invalid-feedback">Required</div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Message</label>
+                                <textarea class="form-control" rows="4" required></textarea>
+                                <div class="invalid-feedback">Required</div>
+                            </div>
+                            <button class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.menu-item').forEach(m => {
+            if (m.getAttribute('onclick').includes(id)) m.classList.add('active');
+        });
+    }
+    (()=>{const forms=document.querySelectorAll('.needs-validation');Array.from(forms).forEach(f=>f.addEventListener('submit',e=>{if(!f.checkValidity()){e.preventDefault();e.stopProp();}f.classList.add('was-validated');}));})()
+</script>
+</body>
+</html>

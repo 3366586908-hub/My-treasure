@@ -1,0 +1,34 @@
+# === 通用 ===
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+secrets.*
+*.pem
+*.key
+
+# === 前端（WebStorm） ===
+node_modules/
+dist/
+build/
+coverage/
+.next/
+.cache/
+*.local
+
+# === 本地配置（含数据库密码，绝不入库） ===
+backend/src/main/resources/application.properties
+backend/src/main/resources/application-*.properties
+
+# === 后端（IDEA / Maven） ===
+target/
+out/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+.idea/
+*.iml
+*.iws
+*.ipr
+.mvn/timing.properties
