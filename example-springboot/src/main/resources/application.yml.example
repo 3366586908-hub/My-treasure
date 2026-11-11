@@ -1,0 +1,18 @@
+# 复制本文件为 application.yml 后按自己的环境填写（真实文件已被 .gitignore 排除）
+# 访问地址：http://localhost:8003
+server:
+  port: 8003
+
+spring:
+  application:
+    name: example-springboot
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/example_db
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true

@@ -20,6 +20,10 @@ coverage/
 # === 本地配置（含数据库密码，绝不入库） ===
 backend/src/main/resources/application.properties
 backend/src/main/resources/application-*.properties
+example-springboot/src/main/resources/application.yml
+example-springboot/src/main/resources/application-*.yml
+**/src/main/resources/application.properties
+**/src/main/resources/application*.yml
 
 # === 后端（IDEA / Maven） ===
 target/

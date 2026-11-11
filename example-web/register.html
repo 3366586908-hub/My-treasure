@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN" data-bs-theme="auto">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Register</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/icons/bootstrap-icons.min.css">
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            min-height: 100vh;
+            background: radial-gradient(1200px 800px at 10% 10%, #c084fc33, transparent 60%),
+            radial-gradient(1000px 700px at 90% 20%, #60a5fa33, transparent 60%),
+            linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #db2777 100%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            background-color: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .25);
+        }
+
+        [data-bs-theme="dark"] .glass-card {
+            background-color: rgba(0, 0, 0, .25);
+            border-color: rgba(255, 255, 255, .15);
+        }
+
+        .brand-badge {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            color: #fff;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-11 col-sm-9 col-md-7 col-lg-5">
+            <div class="card shadow-lg glass-card border-0">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="brand-badge">SQA</div>
+                        <div>
+                            <h1 class="h4 mb-1 fw-semibold">Create Account</h1>
+                            <p class="text-body-secondary mb-0">Register as a Simply Rugby user</p>
+                        </div>
+                        <div class="ms-auto"><i class="bi bi-moon-stars text-body-secondary"></i></div>
+                    </div>
+                    <form class="needs-validation" novalidate>
+                        <div id="nickNameDiv" class="form-floating mb-3">
+                            <input type="text" class="form-control" id="nickName" name="nickName" placeholder="Nick Name"
+                                   required>
+                            <label for="nickName"><i class="bi bi-person me-1"></i> Nick Name</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                            <label for="email"><i class="bi bi-envelope me-1"></i> Email</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                                   minlength="6" required>
+                            <label for="password"><i class="bi bi-lock me-1"></i> Password</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="confirm" placeholder="Repeat Password"
+                                   required>
+                            <label for="confirm"><i class="bi bi-shield-lock me-1"></i> Confirm Password</label>
+                        </div>
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="agree">
+                            <label class="form-check-label small" for="agree">
+                                I have read and agree <a href=" " class="link-light">Terms of Service</a>
+                            </label>
+                            <div class="invalid-feedback">Please tick the box to agree to the terms</div>
+                        </div>
+                        <button id="btn" class="btn btn-primary w-100 py-2 mb-3"
+                                type="submit">
+                            <i class="bi bi-person-plus me-1"></i> Register an account
+                        </button>
+                        <div class="text-center text-body-secondary small">
+                            Already have an account? <a href="login.html" class="link-light">Login now!</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('form').on('submit',function (e){
+        //禁止自动提交，只要用jquery控制form表单的提交，第一行一定是阻止提交
+        e.preventDefault();
+        $.ajax({
+            url:'http://localhost:8003/user/register',
+            type: 'POST',
+            data:$(this).serialize(),
+            success: function (res){
+               if (res.code === 200) {
+                   window.location = 'login.html';
+               }else {
+                   alert(res.message);
+               }
+            },
+            error: function(err){
+
+            }
+        });
+    });
+</script>
+</body>
+</html>

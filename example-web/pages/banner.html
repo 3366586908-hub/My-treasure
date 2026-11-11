@@ -1,0 +1,393 @@
+<div id="banner" class="card shadow-sm flex-column" style="height: calc(100vh - 10rem);">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="m-0 fw-bold">
+            <i class="bi bi-table me-2 text-primary"></i>
+                Banner Manage
+        </h5>
+        <div class="d-flex gap-2">
+            <form id="bannerSearch" class="d-flex">
+                <input id="searchBannerName" class="form-control me-2" type="search" placeholder="Search Banner Name" aria-label="Search">
+            </form>
+            <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#addBannerModal">
+              <i class="bi bi-plus-lg me-2"></i>Add Banner
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-0 flex-grow-1 overflow-auto">
+        <table id="bannerTable" class="table table-hover table-bordered m-0 align-middle">
+            <thead class="table-light text-center">
+            <tr>
+                <th scope="col" style="width: 60px;">No.</th>
+                <th scope="col">Banner Name</th>
+                <th scope="col">Banner Image Url</th>
+                <th scope="col">Sort</th>
+                <th scope="col" style="width: 220px;">Operation</th>
+            </tr>
+            </thead>
+            <tbody class="text-center">
+
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <div class="small text-muted">
+            共<span id="totalRecordCount">200</span>条记录，当前第<span id="currentPage">1</span> / <span
+        id="totalPage">20</span>页
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item disabled prev">
+                    <a class="page-link" href="#">上一页</a>
+                </li>
+                <div id="pageBtn" class="d-flex">
+
+                </div>
+                <li class="page-item next">
+                    <a href="#" class="page-link">下一页</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="modal fade" id="addBannerModal" tabindex="-1" aria-labelledby="addBannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="addBannerForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBannerModalLabel">Add Banner</h5>
+                    <button type="button" class="btn-close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="bannerName" class="form-label">Banner Name</label>
+                        <input type="text" class="form-control" id="bannerName" name="name" placeholder="Banner Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="imgUrl" class="form-label">Image Url</label>
+                        <input type="text" class="form-control" id="imgUrl" name="imgUrl" placeholder="Image Url">
+                    </div>
+                    <div class="mb-3">
+                        <label for="sort" class="form-label">Sort</label>
+                        <input type="text" class="form-control" id="sort" name="sort" placeholder="Sort">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editBannerModal" tabindex="-1" aria-labelledby="editBannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="editBannerForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBannerModalLabel">Edit Banner</h5>
+                    <button type="button" class="btn-close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editBannerId" name="id" value="">
+                    <div class="mb-3">
+                        <label for="editBannerName" class="form-label">Banner Name</label>
+                        <input type="text" class="form-control" id="editBannerName" name="name" placeholder="Banner Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editImgUrl" class="form-label">Image Url</label>
+                        <input type="text" class="form-control" id="editImgUrl" name="imgUrl" placeholder="Image Url">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSort" class="form-label">Sort</label>
+                        <input type="text" class="form-control" id="editSort" name="sort" placeholder="Sort">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewBannerModal" tabindex="-1" aria-labelledby="viewBannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="viewBannerForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">View Banner</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9" id="viewBannerName"></dd>
+
+                        <dt class="col-sm-3">Image</dt>
+                        <dd class="col-sm-9">
+                            <img id="viewImgUrl"
+                                 src=""
+                            class="rounded" style="width: 20rem">
+                        </dd>
+
+                        <dt class="col-sm-3">Sort</dt>
+                        <dd class="col-sm-9" id="viewSort"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteBannerModal" tabindex="-1" aria-labelledby="deleteBannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <input type="hidden" id="deleteBannerId" value="">
+                <div class="modal-header">
+                    <h5 class="modal-title">View Banner</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to delete this banner?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="deleteBtn" type="button" class="btn btn-danger">Delete</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+
+        let currentPage = 1;
+        getList(currentPage);
+
+        function getList(currentPage) {
+            $.ajax({
+                url: "http://localhost:8003/banner/page",
+                type: "GET",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                },
+                data: {
+                    keyWords: $('#searchBannerName').val(),
+                    pageNum: currentPage,
+                    pageSize: 10,
+                },
+                success: function (res) {
+                    createTableData(res.data.records);
+                    setPage(res.data);
+                },
+                error: function (err) {
+
+                }
+            });
+        }
+
+        function createTableData(bannerList) {
+            let bannerDataHtml = '';
+            for (let i = 0; i < bannerList.length; i++) {
+                let banner = bannerList[i];
+                bannerDataHtml += `<tr data-id="${banner.id}">
+                    <td>${i + 1}</td>
+                    <td>${banner.name}</td>
+                    <td>
+                        <img src="${banner.imgUrl}"
+                        class="rounded" style="width: 15rem">
+                    </td>
+                    <td>${banner.sort}</td>
+                    <td>
+                        <button class="btn btn-sm btn-link p-0 mx-1 text-primary btn-view"><i class="bi bi-eye-fill me-2"></i>view
+                        </button>
+                        <button class="btn btn-sm btn-link p-0 mx-1 text-dark btn-edit"><i class="bi bi-pencil-square me-2"></i>edit
+                        </button>
+                        <button class="btn btn-sm btn-link p-0 mx-1 text-danger btn-del"><i class="bi bi-trash me-2"></i>delete
+                        </button>
+                    </td>
+                </tr>`;
+            }
+            $('#bannerTable tbody').html(bannerDataHtml);
+        }
+
+        function setPage(pageData) {
+            let current = pageData.current;
+            let pages = pageData.pages;
+            let totalCount = pageData.total;
+            $('#totalRecordCount').text(totalCount);
+            $('#currentPage').text(current);
+            $('#totalPage').text(pages);
+
+            let pageBtn = '';
+            for (let i = 1; i <= pages; i++) {
+                pageBtn += `<li class="page-item ${current === i ? 'active' : ''}">
+                        <a class="page-link" href="#">${i}</a>
+                    </li>`;
+            }
+            $('#pageBtn').html(pageBtn);
+
+            if (pages === 1) {
+                $('.prev').addClass('disabled');
+                $('.next').addClass('disabled');
+            } else if (current === 1) {
+                $('.prev').addClass('disabled');
+                $('.next').removeClass('disabled');
+            } else if (current === pages) {
+                $('.prev').removeClass('disabled');
+                $('.next').addClass('disabled');
+            } else {
+                $('.prev').removeClass('disabled');
+                $('.next').removeClass('disabled');
+            }
+        }
+
+        $(document).on('click', '#banner .page-link', function (event) {
+            let clickPage = $(this).text();
+            if (clickPage === '上一页') {
+                currentPage--;
+            } else if (clickPage === '下一页') {
+                currentPage++;
+            } else {
+                currentPage = clickPage;
+            }
+            getList(currentPage);
+        })
+
+        $('#searchBannerName').on('keypress', function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                getList(1);
+            }
+        })
+
+        $('#addBannerForm').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "http://localhost:8003/banner/add",
+                type: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                },
+                data: $(this).serialize(),
+                success: function (res) {
+                    if (res.code === 200) {
+                        getList(1);
+                    } else {
+                        alert(res.message);
+                    }
+                    let addBannerModal = bootstrap.Modal.getInstance($('#addBannerModal')[0]);
+                    addBannerModal.hide();
+                },
+                error: function (err) {
+
+                }
+            });
+        })
+
+        $('#bannerTable').on('click', '.btn-view, .btn-edit, .btn-del', function (e) {
+            e.preventDefault();
+            let id = $(this).closest('tr').data('id');
+            if ($(this).hasClass('btn-view')) {
+                viewBannerData(id, 'view');
+                let viewBannerModal = new bootstrap.Modal($('#viewBannerModal')[0]);
+                viewBannerModal.show();
+            }
+            if ($(this).hasClass('btn-edit')) {
+                viewBannerData(id, 'edit');
+                let editBannerModal = new bootstrap.Modal($('#editBannerModal')[0]);
+                editBannerModal.show();
+            }
+            if ($(this).hasClass('btn-del')) {
+                $('#deleteBannerId').val(id);
+                let delBannerModal = new bootstrap.Modal($('#deleteBannerModal')[0]);
+                delBannerModal.show();
+            }
+        })
+
+        function viewBannerData(id, modalName) {
+            $.ajax({
+                url: "http://localhost:8003/banner/view",
+                type: "GET",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                },
+                data: {
+                    id: id,
+                },
+                success: function (res) {
+                    if (res.code === 200) {
+                        if (modalName === 'view') {
+                            $('#viewBannerName').text(res.data.name);
+                            $('#viewImgUrl').attr('src', res.data.imgUrl);
+                            $('#viewSort').text(res.data.sort);
+                        } else if (modalName === 'edit') {
+                            $('#editBannerId').val(res.data.id);
+                            $('#editBannerName').val(res.data.name);
+                            $('#editImgUrl').val(res.data.imgUrl);
+                            $('#editSort').val(res.data.sort);
+                        }
+                    }
+                },
+                error: function (err) {
+
+                }
+            });
+        }
+
+        $("#editBannerForm").on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "http://localhost:8003/banner/edit",
+                type: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                },
+                data: $(this).serialize(),
+                success: function (res) {
+                    if (res.code === 200) {
+                        getList(1);
+                    } else {
+                        alert(res.message);
+                    }
+                    let editBannerModal = bootstrap.Modal.getInstance($('#editBannerModal')[0]);
+                    editBannerModal.hide();
+                },
+                error: function (err) {
+
+                }
+            })
+        })
+
+        $('#deleteBtn').on('click', function (e) {
+            $.ajax({
+                url: "http://localhost:8003/banner/delete",
+                type: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                },
+                data: {
+                    id: $('#deleteBannerId').val()
+                },
+                success: function (res) {
+                    if (res.code === 200) {
+                        getList(1);
+                    } else {
+                        alert(res.message);
+                    }
+                    let deleteBannerModal = bootstrap.Modal.getInstance($('#deleteBannerModal')[0]);
+                    deleteBannerModal.hide();
+                },
+                error: function (err) {
+
+                }
+            });
+        })
+    })
+</script>

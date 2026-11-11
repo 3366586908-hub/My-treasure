@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/icons/bootstrap-icons.min.css">
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            min-height: 100vh;
+            background: radial-gradient(1200px 800px at 10% 10%,
+            #c084fc33, transparent 60%),
+            radial-gradient(1000px 700px at 90% 20%, #60a5fa33, transparent 60%),
+            linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #db2777 100%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .brand-badge {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            color: #fff;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-11 col-lg-5 col-sm-9 col-md-7">
+            <div class="card shadow glass-card border-0">
+                <div class="card-body p-5">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="brand-badge">SQA</div>
+                        <div>
+                            <h1 class="h4 fw-semibold mb-1">Welcome</h1>
+                            <p class="text-body-secondary mb-0">Please log in your account</p>
+                        </div>
+                        <div class="ms-auto">
+                            <i class="bi bi-snow2"></i>
+                        </div>
+                    </div>
+                    <form>
+                        <div class="form-floating mb-4">
+                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                            <label for="email"><i class="bi bi-envelope me-1"></i>Email</label>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <input type="password" class="form-control" id="password" placeholder="Password">
+                            <label for="password"><i class="bi bi-lock me-1"></i>Password</label>
+                        </div>
+                        <div class="mb-4 d-flex justify-content-between">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="check1" name="option1"
+                                       value="something" checked>
+                                <label class="form-check-label">Remember me</label>
+                            </div>
+                            <a href="#"
+                               class="small link-light link-underline-opacity-0
+                               link-underline-opacity-100-hover">Forget
+                                password?</a>
+                        </div>
+                        <button id="btn" type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                        </button>
+                        <div class="text-center small mt-3">
+                            Not account? <a href="register.html" class="link-light">Register an account</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('form').on('submit', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:8003/user/login',
+            type: 'POST',
+            data:{
+                email:$('#email').val(),
+                password: $('#password').val(),
+            },
+            success: function (res) {
+                if (res.code === 200) {
+                    localStorage.setItem('token',res.data);
+                    window.location = 'index.html';
+                }else {
+                    alert(res.message);
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    })
+    //作用域在当前整个网页中，不管鼠标焦点在哪里都起作用
+    $(document).on('keypress',function (e) {
+        //13是键盘enter的asc值
+        if (e.keyCode === 13){
+            //阻止表单默认提交
+            e.preventDefault();
+            $('#btn').click();
+        }
+    });
+</script>
+</body>
+</html>

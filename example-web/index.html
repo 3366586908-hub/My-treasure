@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/icons/bootstrap-icons.css">
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<!--导航栏-->
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+            </ul>
+
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input id="keyWords" type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+            </form>
+
+            <div id="noLogin" class="text-end">
+                <a type="button" class="btn btn-outline-light me-2" href="login.html">Login</a>
+                <a type="button" class="btn btn-warning" href="register.html">Sign-up</a>
+            </div>
+
+            <div id="login" class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="images/default_avatar.png " alt="" width="32" height="32" class="rounded-circle me-2">
+                    <strong>mdo</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+
+                    <li><a class="dropdown-item" href="home.html">Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a id="signOut" class="dropdown-item" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- 轮播 -->
+<div id="demo" class="carousel slide" data-bs-ride="carousel">
+
+    <!-- 指示符 -->
+    <div class="carousel-indicators">
+
+    </div>
+
+    <!-- 轮播图片 -->
+    <div class="carousel-inner">
+
+    </div>
+</div>
+<!--List-->
+<div id="productDiv" class="mt-3 mx-5">
+
+
+</div>
+<script>
+    initBanner();
+    function initBanner(){
+        $.ajax({
+            url:'http://localhost:8003/banner/getList',
+            type: 'GET',
+            success:function (res){
+                 if(res.code===200){
+                    createBannerHtml(res.data);
+                 }
+            },
+            error:function (err){
+
+            },
+        });
+    }
+
+    function createBannerHtml(bannerList){
+        let buttonHtml = createBannerButton(bannerList);
+        let imageHtml = createBannerImage(bannerList);
+        $(`#demo .carousel-indicators`).html(buttonHtml);
+        $(`#demo .carousel-inner`).html(imageHtml);
+    }
+
+    function createBannerButton(bannerList){
+         let buttonHtml=``;
+         for(let i=0;i<bannerList.length;i++){
+             buttonHtml += `<button type="button" data-bs-target="#demo" data-bs-slide-to="${i}" class="${i===0 ? `active` : ''}"></button>`;
+         }
+         return buttonHtml;
+    }
+
+    function createBannerImage(bannerList){
+        let imageHtml=``;
+        for (let i=0;i<bannerList.length;i++){
+            imageHtml += `<div class="carousel-item ${i===0 ? `active` : ''}">
+                                <img src="${bannerList[i].imgUrl}"
+                                 class="d-block" style="width:100%">
+                            </div>`;
+        }
+        return imageHtml;
+    }
+
+    initProduct();
+
+    function initProduct(){
+        $.ajax({
+            url:'http://localhost:8003/product/getList',
+            type:'GET',
+            data:{
+                keyWords:$('#keyWords').val(),
+            },
+            success: function (res){
+               if(res.code === 200){
+                    createProductHtml(res.data);
+               }
+            },
+            error:function (err){
+
+            }
+        });
+    }
+
+    $('#keyWords').on('keypress',function (e) {
+        //13是键盘enter的asc值
+        if (e.keyCode === 13){
+            //阻止表单默认提交
+            e.preventDefault();
+            initProduct();
+        }
+    });
+
+    function createProductHtml(productList){
+        let productHtml = ``;
+        for(let i = 0;i<productList.length;i++){
+            let product = productList[i];
+            if(i === 0 || i % 6 === 0){
+                if (i > 0) {
+                    productHtml += `</div>`
+                }
+                productHtml += `<div class="row mb-3">`;
+            }
+            productHtml += `<div class="col-2 card">
+                                <img class="card-img-top" src="${product.imgUrl}" alt="Card image">
+                                <div class="card-body">
+                                    <h4 class="card-title">${product.name}</h4>
+                                    <p class="card-text">${product.intro}</p>
+                                    <h4>${product.price}</h4>
+                                    <a href="#" class="btn btn-primary">Buy</a>
+                                </div>
+                            </div>`;
+        }
+        productHtml += `</div>`;
+        $('#productDiv').html(productHtml);
+    }
+
+    getLoginUserInfo();
+
+    function getLoginUserInfo(){
+        $.ajax({
+            url:'http://localhost:8003/user/getLoginUserInfo',
+            type:'GET',
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+            success:function (res){
+                if (res.code === 200){
+                    $('#login a img').attr('src',res.data.avatar);
+                    $('#login a strong').text(res.data.nickName);
+                    $('#noLogin').hide();
+                    $('#login').show();
+                }else{
+                    $('#noLogin').show();
+                    $('#login').hide();
+                }
+            },
+            error:function (err){
+                $('#noLogin').show();
+                $('#login').hide();
+            }
+        });
+    }
+
+    $('#signOut').on('click',function(e){
+        localStorage.removeItem('token');
+        getLoginUserInfo();
+    })
+</script>
+</body>
+</html>

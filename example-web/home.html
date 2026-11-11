@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/icons/bootstrap-icons.min.css">
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="vh-100 d-flex">
+<div id="sidebar" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+    <a href="index.html" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+        <span class="fs-4">Profile</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="#"
+               class="nav-link text-white"
+               aria-current="page"
+               data-bs-toggle="collapse"
+               data-bs-target="#home-collapse"
+               aria-expanded="true">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+                Home
+            </a>
+            <div class="collapse show" id="home-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 ms-5 small">
+                    <li>
+                        <a href="#"
+                           class="nav-link text-white rounded menu-item active"
+                           data-url="#"
+                           data-title="Overview"
+                           data-parent="Home"
+                        >
+                            Overview
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                                href="#"
+                                class="nav-link text-white rounded menu-item"
+                                data-url="#"
+                                data-title="Updates"
+                                data-parent="Home"
+                        >
+                            Updates
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                                href="#"
+                                class="nav-link text-white rounded menu-item"
+                                data-url="#"
+                                data-title="Reports"
+                                data-parent="Home"
+                        >
+                            Reports
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li>
+            <a
+                    href="#"
+                    class="nav-link text-white menu-item"
+                    data-url="pages/banner.html"
+                    data-title="Banner Manage"
+                    data-parent=""
+            >
+                <svg
+                        class="bi me-2"
+                        width="16"
+                        height="16"
+                ><use xlink:href="#speedometer2"/></svg>
+                Banner Manage
+            </a>
+        </li>
+        <li>
+            <a
+                    href="#"
+                    class="nav-link text-white menu-item"
+                    data-url="pages/product.html"
+                    data-title="Product Manage"
+                    data-parent=""
+            >
+                <svg
+                        class="bi me-2"
+                        width="16"
+                        height="16"
+                ><use xlink:href="#table"/></svg>
+                Product Manage
+            </a>
+        </li>
+
+    </ul>
+</div>
+<main id="main-content" class="flex-grow-1 bg-light d-flex flex-column h-100">
+    <div class="bg-dark py-3 px-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <button class="btn btn-link text-light p-0 me-3" id="sidebarToggle">
+                <i class="bi bi-list fs-4"></i>
+            </button>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 text-white text-decoration-none">
+                    <li class="breadcrumb-item">
+                        <a href="#" class="text-white-50 text-decoration-line-none" id="breadcrumbParent">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active text-white" id="breadcrumbCurrent" aria-current="page">
+                        Overview
+                    </li>
+                </ol>
+            </nav>
+        </div>
+        <div id="login" class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="images/default_avatar.png " alt="" width="32" height="32" class="rounded-circle me-2">
+                <strong>mdo</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a id="signOut" class="dropdown-item" href="#">Sign out</a></li>
+            </ul>
+        </div>
+    </div>
+        <div id="mainBody" class="flex-grow-1 p-3 overflow-auto"></div>
+        <div class="text-center bg-dark text-light py-2">
+            &copy; 2026 www.sqa.com.cn
+        </div>
+</main>
+<!-- 修改密码模态框 -->
+<div class="modal fade" tabindex="-1" id="changePasswordModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="changePasswordForm">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">Change Password</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- 模态框内容 -->
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="Password"
+                           minlength="6" required>
+                    <label for="oldPassword"><i class="bi bi-lock me-1"></i>New Password</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Password"
+                           minlength="6" required>
+                    <label for="newPassword"><i class="bi bi-lock me-1"></i>New Password</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="confirm" placeholder="Repeat Password"
+                           required>
+                    <label for="confirm"><i class="bi bi-shield-lock me-1"></i> Confirm New Password</label>
+                </div>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    getLoginUserInfo();
+
+    function getLoginUserInfo(){
+        $.ajax({
+            url:'http://localhost:8003/user/getLoginUserInfo',
+            type:'GET',
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+            success:function (res){
+                if (res.code === 200){
+                    $('#login a img').attr('src',res.data.avatar);
+                    $('#login a strong').text(res.data.nickName);
+
+                }else{
+                    window.location = 'index.html';
+                }
+            },
+            error:function (err){
+                window.location = 'index.html';
+            }
+        });
+    }
+
+    $('#signOut').on('click',function(e){
+        localStorage.removeItem('token');
+        window.location = 'index.html';
+    })
+
+    $(document).on('click','.menu-item',function(e){
+        //禁止自动提交href去自动跳转
+        e.preventDefault();
+        $('.menu-item').removeClass('active');
+        $(this).addClass('active');
+
+        //$(this)代表当前点击的是按一个a标签，data('url')指的是a标签内自定义的data-url
+        const url=$(this).data('url');
+
+        const title =$(this).data('title');
+
+        const parent =$(this).data('parent');
+
+        $('#breadcrumbCurrent').text(title);
+        if (parent){
+            $('#breadcrumbParent').text(parent);
+        }else {
+            $('#breadcrumbParent').text(title);
+        }
+
+        if (url) {
+            $('#mainBody').load(url);
+        }
+    })
+
+    $('#changePasswordForm').on('submit',function (e){
+        e.preventDefault();
+        $.ajax({
+            url:'http://localhost:8003/user/changePassword',
+            type: 'POST',
+            headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+            data:$(this).serialize(),
+            success:function (res){
+                if (res.code === 200){
+                    localStorage.removeItem('token');
+                    window.location = 'login.html';
+                }else{
+                    alert(res.message);
+                }
+            },
+            error: function (err){
+                alert('Change Error!');
+            }
+        });
+        let changePasswordModal = bootstrap.Modal.getInstance($('#changePasswordModal')[0]);
+        changePasswordModal.hide();
+    })
+</script>
+</body>
+</html>
